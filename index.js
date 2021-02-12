@@ -99,6 +99,7 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.use(unknownEndpoint)
+app.use(express.static('build'))
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
