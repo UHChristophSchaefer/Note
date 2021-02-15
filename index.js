@@ -21,10 +21,6 @@ app.use(requestLogger)
 
 
 // GET
-app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-})
-
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
     response.json(notes)
@@ -35,7 +31,7 @@ app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
     .then(note => {
       if (note) {
-        response.json(note)
+        response.json(note.toJSON())
       } else {
         response.status(404).end()
       }
@@ -69,12 +65,10 @@ app.post('/api/notes', (request, response, next) => {
     date: new Date(),
   })
 
-  note
-    .save()
-    .then(savedNote => savedNote.toJSON())
-    .then(savedAndFormattedNote => {
-      response.json(savedAndFormattedNote)
-    }) 
+  note.save()
+    .then(savedNote => {
+      response.json(savedNote.toJSON())
+    })
     .catch(error => next(error))
 })
 
@@ -108,7 +102,7 @@ const errorHandler = (error, request, response, next) => {
 // this has to be the last loaded middleware.
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 3001 
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
